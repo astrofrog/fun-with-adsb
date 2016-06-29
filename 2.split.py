@@ -3,27 +3,59 @@
 
 import os
 from collections import defaultdict
+import multiprocessing as mp
 
 import pyModeS as pms
 
 data = defaultdict(list)
 
-for i, line in enumerate(open('plane_data.txt')):
+def validate(message):
+    """
+    Return True if the message is valid, False otherwise
+    """
+    int(pms.util.crc(message), 2) == 0
 
-    if i % 1000 == 0:
-        print("Processed {0} messages...".format(i))
+# We process the messages in chunks of 100000 so that we can parallelize
+# things inside these chunks.
 
-    hex_data = line.strip().split()[1]
+p = mp.Pool()
 
-    # Find aircraft ID
-    aircraft = pms.adsb.icao(hex_data)
+CHUNK_SIZE = 100000
 
-    # Output only entries with a valid checksum
-    if int(pms.util.crc(hex_data), 2) == 0:
-        data[aircraft].append(line)
+f = open('plane_data.txt')
+
+while True:
+
+    print("Processing next chunk of {0}".format(CHUNK_SIZE))
+
+    # Read next chunk of lines
+    print(" -> Reading")
+    lines = []
+    for i in range(CHUNK_SIZE):
+        lines.append(f.readline())
+
+    # Extract hex data
+    print(" -> Extracting hex data")
+    hex_data = [line.strip().split()[1] for line in lines]
+
+    # Validate these chunks
+    print(" -> Validating messages")
+    valid = p.map(validate, hex_data)
+
+    # Extract aircraft codes
+    print(" -> Determining aircrafts")
+    aircraft = p.map(pms.adsb.icao, hex_data)
+
+    # Keep track only of valid entries and split by aircraft
+    print(" -> Splitting by aircraft")
+    for i in range(len(lines)):
+        if valid[i]:
+            data[aircraft[i]].append(line)
 
 if not os.path.exists('raw'):
     os.mkdir('raw')
+
+print("Writing to file")
 
 for aircraft in data:
     if len(data[aircraft]) > 10:

@@ -101,5 +101,5 @@ def process(filename):
 if not os.path.exists('tables'):
     os.mkdir('tables')
 
-p = mp.Pool(processes=12)
+p = mp.Pool()
 list(map(process, glob.glob(os.path.join('raw', '*'))))
