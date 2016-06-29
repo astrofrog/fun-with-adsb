@@ -56,7 +56,7 @@ while True:
     print(" -> Splitting by aircraft")
     for i in range(len(lines)):
         if valid[i]:
-            data[aircraft[i]].append(line)
+            data[aircraft[i]].append(lines[i])
             
     if end:
         break
