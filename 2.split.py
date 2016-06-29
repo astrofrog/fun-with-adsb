@@ -24,6 +24,8 @@ CHUNK_SIZE = 100000
 
 f = open('plane_data.txt')
 
+end = False
+
 while True:
 
     print("Processing next chunk of {0}".format(CHUNK_SIZE))
@@ -32,7 +34,11 @@ while True:
     print(" -> Reading")
     lines = []
     for i in range(CHUNK_SIZE):
-        lines.append(f.readline())
+        line = f.readline()
+        if line == "":
+            end = True
+            break
+        lines.append(line)
 
     # Extract hex data
     print(" -> Extracting hex data")
@@ -51,6 +57,9 @@ while True:
     for i in range(len(lines)):
         if valid[i]:
             data[aircraft[i]].append(line)
+            
+    if end:
+        break
 
 if not os.path.exists('raw'):
     os.mkdir('raw')
