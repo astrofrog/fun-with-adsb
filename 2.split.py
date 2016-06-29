@@ -13,7 +13,7 @@ def validate(message):
     """
     Return True if the message is valid, False otherwise
     """
-    int(pms.util.crc(message), 2) == 0
+    return int(pms.util.crc(message), 2) == 0
 
 # We process the messages in chunks of 100000 so that we can parallelize
 # things inside these chunks.
