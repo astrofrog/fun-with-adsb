@@ -94,7 +94,7 @@ def process(filename):
     else:
         callsign = 'UNKNOWN'
 
-    t.meta['CALLSIGN'] = callsign
+    t['callsign'] = [callsign] * len(t)
 
     t.write(os.path.join('tables', aircraft + '.fits'), overwrite=True)
 
