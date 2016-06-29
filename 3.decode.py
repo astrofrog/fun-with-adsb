@@ -102,4 +102,4 @@ if not os.path.exists('tables'):
     os.mkdir('tables')
 
 p = mp.Pool()
-list(map(process, glob.glob(os.path.join('raw', '*'))))
+p.map(process, glob.glob(os.path.join('raw', '*')))
