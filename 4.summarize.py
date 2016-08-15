@@ -15,7 +15,8 @@ for filename in glob.glob(os.path.join('tables', '*.fits')):
     print(filename)
     t = Table.read(filename)
     sub = t[~np.isnan(t['altitude'])]['timestamp', 'callsign', 'longitude', 'latitude', 'altitude']
-    t_all.append(sub)
+    if len(sub) > 0:
+        t_all.append(sub)
 
 t_all = vstack(t_all)
 t_all.write('summary.fits', overwrite=True)

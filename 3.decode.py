@@ -7,15 +7,24 @@ from collections import defaultdict, Counter
 import pyModeS as pms
 from astropy.table import Table
 
+if len(sys.argv) != 2:
+    print("Usage: python {0} directory".format(sys.argv[0]))
+    sys.exit(1)
+else:
+    directory = sys.argv[1]
+
 counter = Counter()
 
 lon_lat_cache = defaultdict(dict)
 
 def process(filename):
 
-    t = Table(names=('timestamp', 'longitude', 'latitude', 'altitude', 'ground_speed', 'air_speed', 'heading', 'vertical_rate'),
-              dtype=(float, float, float, float, float, float, float, float), masked=True)
+    print("Processing {0}".format(filename))
 
+    t = Table(names=('timestamp', 'longitude', 'latitude', 'altitude',
+                     'ground_speed', 'air_speed', 'heading', 'vertical_rate'),
+              dtype=(float, float, float, float, float, float, float, float),
+              masked=True)
 
     callsigns = Counter()
 
@@ -94,12 +103,14 @@ def process(filename):
     else:
         callsign = 'UNKNOWN'
 
+    callsign = "{0:7s}".format(callsign)
+
     t['callsign'] = [callsign] * len(t)
 
-    t.write(os.path.join('tables', aircraft + '.fits'), overwrite=True)
+    t.write(os.path.join(directory, 'tables', aircraft + '.fits'), overwrite=True)
 
-if not os.path.exists('tables'):
-    os.mkdir('tables')
+if not os.path.exists(os.path.join(directory, 'tables')):
+    os.mkdir(os.path.join(directory, 'tables'))
 
 p = mp.Pool()
-p.map(process, glob.glob(os.path.join('raw', '*')))
+p.map(process, glob.glob(os.path.join(directory, 'raw', '*')))
