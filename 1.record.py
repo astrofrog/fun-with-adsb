@@ -42,7 +42,7 @@ while True:
             fout = None
 
         if fout is None:
-            fout = open(filename, 'w')
+            fout = open(filename, 'a')
 
         fout.write("{0:.3f} {1}\n".format(timestamp, hex_data))
         fout.flush()
