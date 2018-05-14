@@ -9,6 +9,8 @@ import subprocess
 
 import pyModeS as pms
 
+subprocess.check_output('killall -9 rtl_adsb', shell=True)
+
 p = subprocess.Popen('rtl_adsb',
                      stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE)
