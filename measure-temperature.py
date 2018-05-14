@@ -30,6 +30,6 @@ while True:
         continue
 
     fout.write("{0} {1}\n".format(time.time(), value_temperature))
-    fout.close()
+    fout.flush()
 
     time.sleep(10)
