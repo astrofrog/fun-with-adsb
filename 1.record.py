@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # Simply record ADS-B messages - requires the rtl-sdr package to be installed
 # This also searches specifically for messages with downlink format 17 (10001)
 
