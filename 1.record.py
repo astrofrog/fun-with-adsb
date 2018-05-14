@@ -15,8 +15,10 @@ p = subprocess.Popen('rtl_adsb',
                      stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE)
 
-if not os.path.exists('raw'):
-    os.mkdir('raw')
+RAW_DIR = os.path.join(os.path.dirname(__file__), 'raw')
+
+if not os.path.exists(RAW_DIR):
+    os.mkdir(RAW_DIR)
 
 fout = None
 
@@ -33,7 +35,7 @@ while True:
 
     if bin_data[:5] == '10001':
 
-        filename = os.path.join('raw', str(int(timestamp / 100000)))
+        filename = os.path.join(RAW_DIR, str(int(timestamp / 100000)))
 
         if fout is not None and fout.name != filename:
             fout.close()
